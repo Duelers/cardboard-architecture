@@ -1,25 +1,21 @@
 import typing
-
-import models.game_update
+import models
 from . import networking_to_view
-
-import models.events
 
 
 class Model:
-    model: models.GameState = None
-    event_log: typing.List[models.events.BaseEvent] = []
+    def __init__(self):
+        self._game_state: models.GameState = models.GameState.new_game()
+        self._event_log: typing.List[models.BaseEvent] = []
 
-    @classmethod
-    def get(cls):
-        if cls.model:
-            return cls.model.copy(deep=True)
+    @property
+    def game_state(self):
+        return self._game_state
 
-    @classmethod
-    def update(cls, update: models.game_update.GameUpdate):
-        cls.model = update.game_state
+    def update(self, update: models.GameUpdate) -> typing.NoReturn:
+        self._game_state = update.game_state
 
         if update.event:
-            cls.event_log.append(update.event)
+            self._event_log.append(update.event)
 
         networking_to_view.send_update(update)

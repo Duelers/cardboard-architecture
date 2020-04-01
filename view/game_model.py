@@ -1,12 +1,11 @@
 import models
-import models.game_update
 from . import presentation
 
 
 class Model:
-    model: models.GameState = None
+    def __init__(self):
+        self._game_state: models.GameState = None
 
-    @classmethod
-    def update(cls, update: models.game_update.GameUpdate):
-        cls.model = update.game_state
+    def update(self, update: models.GameUpdate):
+        self._game_state = update.game_state
         presentation.update(update)

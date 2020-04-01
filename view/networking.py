@@ -1,39 +1,59 @@
 import requests
-import typing
 from fastapi import FastAPI
 
-import models.events
-import models.game_update
+import models.cells
 from . import game_model
 import networking
 
 app = FastAPI()
 
+model = game_model.Model()
+
 
 @app.post(networking.RECEIVE_GAME_STATE)
-def receive_game_state(game_state: models.game_state.GameState, event: models.events.BaseEvent):
+def receive_game_state(game_state: models.GameState, event: models.BaseEvent):
     """Updates the view's model of the game.
 
     Currently this is keeping the event parameter to be simpler for the sender."""
-    update = models.game_update.GameUpdate(game_state=game_state, event=None)
-    game_model.Model.update(update)
+    update = models.GameUpdate(game_state=game_state, event=None)
+    model.update(update)
 
 
 @app.post(networking.RECEIVE_MOVE)
-def receive_move(game_state: models.game_state.GameState, event: models.events.MoveEvent):
+def receive_move(game_state: models.GameState, event: models.MoveEvent):
     """Updates the view's model of the game from the sent move."""
-    update = models.game_update.GameUpdate(game_state=game_state, event=event)
-    game_model.Model.update(update)
+    update = models.GameUpdate(game_state=game_state, event=event)
+    model.update(update)
+
+
+@app.post(networking.RECEIVE_CHANGE_SOME_VALUE)
+def receive_change_some_value(game_state: models.GameState, event: models.ChangeSomeValueEvent):
+    """Updates the view's model of the game from the sent move."""
+    update = models.GameUpdate(game_state=game_state, event=event)
+    model.update(update)
+
+
+@app.post(networking.DEV_SELECTION)
+def dev_selection(selection_cell: models.cells.cell_index):
+    """A testing route to simulate an input to the ui."""
+    send_selection(selection_cell)
 
 
 @app.post(networking.DEV_USER_INPUT)
-def dev_user_input():
+def dev_user_input(start_cell: models.cells.cell_index, end_cell: models.cells.cell_index):
     """A testing route to simulate an input to the ui."""
-    send_user_input()
+    send_user_input(start_cell, end_cell)
 
 
-def send_user_input():
+def send_user_input(start_cell: models.cells.cell_index, end_cell: models.cells.cell_index):
     requests.post(
         f'{networking.LOCAL_HOST}{networking.CONTROLLER_PORT}{networking.USER_INPUT}',
-        params={'start_cell': '0', 'end_cell': '1'}
+        params={'start_cell': start_cell, 'end_cell': end_cell}
+    )
+
+
+def send_selection(selected_cell: models.cells.cell_index):
+    requests.post(
+        f'{networking.LOCAL_HOST}{networking.CONTROLLER_PORT}{networking.GET_AVAILABLE_ACTIONS}',
+        params={'selected_cell': selected_cell}
     )

@@ -1,4 +1,4 @@
-import models.events
+import models
 from . import video_resources
 
 
@@ -8,8 +8,8 @@ def display_board(game_state: models.GameState):
     print(f'Board: {"".join(cell_displays)}')
 
 
-def play_animation(event: models.events.BaseEvent):
-    print(event.get_animation())
+def play_animation(event: models.BaseEvent, game_state: models.GameState):
+    print(event.get_animation(game_state))
 
 
 def get_video(src):
