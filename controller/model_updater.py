@@ -8,8 +8,8 @@ class ModelUpdater:
     def __init__(self, model: game_model.Model):
         self.model = model
 
-    def handle_effect(self, effect: models.BaseEffect):
-        event = effect.to_event(self.model.game_state)
+    def handle_action(self, action: models.BaseAction):
+        event = action.to_event(self.model.game_state)
         return self.handle_event(event)
 
     def handle_event(self, event: models.BaseEvent):
@@ -27,5 +27,5 @@ class ModelUpdater:
     def _listen_to_event(self, event: models.BaseEvent, listeners: typing.List[models.Listener]):
         for listener in listeners:  # move to own function todo
             if listener.trigger_event_type == type(event).__name__:
-                for response_effect in listener.response_effects:
-                    self.handle_effect(response_effect)
+                for response_action in listener.response_actions:
+                    self.handle_action(response_action)

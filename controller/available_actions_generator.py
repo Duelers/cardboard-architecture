@@ -5,23 +5,27 @@ import models.cells
 import models.constants
 
 
-def get_available_effects(game_state: models.GameState) -> typing.List[models.MoveEffect]:
-    all_effects = []
-    for cell_i, has_unit in enumerate(game_state.board):
-        if has_unit:
-            effects = _get_available_effects_from_cell(cell_i, game_state)
-            all_effects += effects
-    return all_effects
+def get_available_actions(game_state: models.GameState) -> typing.List[models.MoveAction]:
+    all_actions = []
+    for cell in game_state.all_cells:
+        if cell.contents:
+            actions = _get_available_actions_from_cell(models.cells.BoardLocation(x=cell.column, y=cell.row),
+                                                       game_state)
+            all_actions += actions
+    return all_actions
 
 
-def _get_available_effects_from_cell(
-        cell: models.cells.cell_index,
+def _get_available_actions_from_cell(
+        cell: models.cells.BoardLocation,
         game_state: models.GameState
-) -> typing.List[models.MoveEffect]:
-    if not game_state.board[cell]:
+) -> typing.List[models.MoveAction]:
+    if not game_state.get_cell(cell):
         assert False, "Nothing to move at selected cell."
-    all_effects = [models.MoveEffect(start_cell=cell,
-                                     end_cell=(cell + move) % models.constants.NUM_COLUMNS)
-                   for move in (-1, +1)]
-    unblocked_effects = [effect for effect in all_effects if not game_state.board[effect.end_cell]]
-    return unblocked_effects
+    all_actions = [models.MoveAction(start_cell=cell,
+                                     end_cell=(models.cells.BoardLocation(
+                                         x=(cell.x + move) % models.constants.NUM_COLUMNS,
+                                         y=cell.y))
+                                     )
+                   for move in (-1, +1)]  # todo update this
+    unblocked_actions = [action for action in all_actions if not game_state.get_cell(action.end_cell)]
+    return unblocked_actions

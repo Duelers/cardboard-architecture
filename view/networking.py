@@ -1,6 +1,6 @@
 import requests
 from fastapi import FastAPI
-
+import json
 import models.cells
 from . import game_model
 import networking
@@ -34,26 +34,27 @@ def receive_change_some_value(game_state: models.GameState, event: models.Change
 
 
 @app.post(networking.DEV_SELECTION)
-def dev_selection(selection_cell: models.cells.cell_index):
+def dev_selection(selection_cell: models.cells.BoardLocation):
     """A testing route to simulate an input to the ui."""
     send_selection(selection_cell)
 
 
 @app.post(networking.DEV_USER_INPUT)
-def dev_user_input(start_cell: models.cells.cell_index, end_cell: models.cells.cell_index):
+def dev_user_input(start_cell: models.cells.BoardLocation, end_cell: models.cells.BoardLocation):
     """A testing route to simulate an input to the ui."""
     send_user_input(start_cell, end_cell)
 
 
-def send_user_input(start_cell: models.cells.cell_index, end_cell: models.cells.cell_index):
+def send_user_input(start_cell: models.cells.BoardLocation, end_cell: models.cells.BoardLocation):
     requests.post(
         f'{networking.LOCAL_HOST}{networking.CONTROLLER_PORT}{networking.USER_INPUT}',
-        params={'start_cell': start_cell, 'end_cell': end_cell}
+        json={'start_cell': json.loads(start_cell.json()),
+              'end_cell': json.loads(end_cell.json())}
     )
 
 
-def send_selection(selected_cell: models.cells.cell_index):
+def send_selection(selected_cell: models.cells.BoardLocation):
     requests.post(
         f'{networking.LOCAL_HOST}{networking.CONTROLLER_PORT}{networking.GET_AVAILABLE_ACTIONS}',
-        params={'selected_cell': selected_cell}
+        json={'selected_cell': json.loads(selected_cell.json())}
     )

@@ -22,15 +22,15 @@ def setup_new_game():
 
 
 @app.post(networking.USER_INPUT)
-def user_input(start_cell: models.cells.cell_index, end_cell: models.cells.cell_index):
+def user_input(start_cell: models.cells.BoardLocation, end_cell: models.cells.BoardLocation):
     """Receive user input."""
-    effect = models.MoveEffect(start_cell=start_cell, end_cell=end_cell)
-    model_updater.handle_effect(effect)
+    action = models.MoveAction(start_cell=start_cell, end_cell=end_cell)
+    model_updater.handle_action(action)
 
 
 @app.get(networking.GET_AVAILABLE_ACTIONS,
-         response_model=typing.List[models.MoveEffect])
-def user_input():
+         response_model=typing.List[models.MoveAction])
+def available_actions():
     """Get all available actions."""
-    available_effects = available_actions_generator.get_available_effects(model.get())
-    return available_effects
+    available_actions = available_actions_generator.get_available_actions(model.game_state)
+    return available_actions
