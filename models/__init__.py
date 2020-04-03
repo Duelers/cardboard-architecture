@@ -7,9 +7,6 @@ import pydantic
 import typing
 
 from . import cells
-from . import constants
-
-from . import cells
 import networking
 
 
@@ -87,11 +84,11 @@ class Listener(pydantic.BaseModel):
 # board[x] = List3[bool] (Column)
 # board = List3[Column] (Board)
 column_type = pydantic.conlist(bool,
-                               min_items=constants.NUM_ROWS,
-                               max_items=constants.NUM_ROWS)
+                               min_items=cells.NUM_ROWS,
+                               max_items=cells.NUM_ROWS)
 board_type = pydantic.conlist(column_type,
-                              min_items=constants.NUM_COLUMNS,
-                              max_items=constants.NUM_COLUMNS)
+                              min_items=cells.NUM_COLUMNS,
+                              max_items=cells.NUM_COLUMNS)
 
 
 class GameState(pydantic.BaseModel):
@@ -105,12 +102,11 @@ class GameState(pydantic.BaseModel):
     def set_cell(self, location: cells.BoardLocation, value: bool):
         self.board[location.x][location.y] = value
 
-
     @property
     def all_cells(self) -> typing.List[cells.Cell]:
         all_cells = []
-        for x in constants.NUM_COLUMNS:
-            for y in constants.NUM_ROWS:
+        for x in range(cells.NUM_COLUMNS):
+            for y in range(cells.NUM_ROWS):
                 cell = cells.Cell(column=x, row=y, contents=self.get_cell(cells.BoardLocation(x=x, y=y)))
                 all_cells.append(cell)
         return all_cells

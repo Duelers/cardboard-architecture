@@ -10,6 +10,7 @@ app = FastAPI()
 model = game_model.Model()
 
 
+# noinspection PyUnusedLocal
 @app.post(networking.RECEIVE_GAME_STATE)
 def receive_game_state(game_state: models.GameState, effect: models.BaseEffect):
     """Updates the view's model of the game.

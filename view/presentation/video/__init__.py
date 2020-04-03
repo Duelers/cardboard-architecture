@@ -1,4 +1,4 @@
-import models
+import models.cells
 from . import video_resources
 
 
@@ -6,9 +6,9 @@ def display_board(game_state: models.GameState):
     cell_to_display = {True: 'x', False: '_'}
 
     print('Board:')
-    for row in range(models.constants.NUM_ROWS):
+    for row in range(models.cells.NUM_ROWS):
         display_row = []
-        for column in range(models.constants.NUM_COLUMNS):
+        for column in range(models.cells.NUM_COLUMNS):
             cell = game_state.get_cell(models.cells.BoardLocation(x=column, y=row))
             display = cell_to_display[cell]
             display_row.append(display)

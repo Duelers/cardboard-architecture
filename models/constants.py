@@ -1,2 +1,0 @@
-NUM_ROWS = 3
-NUM_COLUMNS = 3
