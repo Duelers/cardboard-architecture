@@ -9,8 +9,8 @@ class Presentation:
     def present(self, update: models.GameUpdate):
         self.video.display_board(update.game_state)
 
-        if update.event:
-            self.video.play_animation(update.event, update.game_state)
+        if update.effect:
+            self.video.play_animation(update.effect, update.game_state)
 
 
 _presentation = Presentation()

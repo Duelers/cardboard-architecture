@@ -13,8 +13,8 @@ from . import cells
 import networking
 
 
-# EVENTS
-class BaseEvent(pydantic.BaseModel):
+# EFFECTS
+class BaseEffect(pydantic.BaseModel):
     def get_animation(self, game_state: GameState):
         return NotImplemented
 
@@ -25,7 +25,7 @@ class BaseEvent(pydantic.BaseModel):
         return NotImplemented
 
 
-class MoveEvent(BaseEvent):
+class MoveEffect(BaseEffect):
     start_cell: cells.BoardLocation
     end_cell: cells.BoardLocation
 
@@ -42,7 +42,7 @@ class MoveEvent(BaseEvent):
         return networking.RECEIVE_MOVE
 
 
-class ChangeSomeValueEvent(BaseEvent):
+class ChangeSomeValueEffect(BaseEffect):
     increase_by: int
 
     def get_animation(self, game_state: GameState):
@@ -58,7 +58,7 @@ class ChangeSomeValueEvent(BaseEvent):
 
 # ACTIONS
 class BaseAction(pydantic.BaseModel):
-    def to_event(self, model: GameState) -> BaseEvent:
+    def to_effect(self, model: GameState) -> BaseEffect:
         return NotImplemented
 
 
@@ -66,20 +66,20 @@ class MoveAction(BaseAction):
     start_cell: cells.BoardLocation
     end_cell: cells.BoardLocation
 
-    def to_event(self, model: GameState) -> BaseEvent:
-        return MoveEvent(start_cell=self.start_cell, end_cell=self.end_cell)
+    def to_effect(self, model: GameState) -> BaseEffect:
+        return MoveEffect(start_cell=self.start_cell, end_cell=self.end_cell)
 
 
 class ChangeSomeValueAction(BaseAction):
     increase_by: int
 
-    def to_event(self, model: GameState) -> BaseEvent:
-        return ChangeSomeValueEvent(increase_by=self.increase_by)
+    def to_effect(self, model: GameState) -> BaseEffect:
+        return ChangeSomeValueEffect(increase_by=self.increase_by)
 
 
 # Listeners
 class Listener(pydantic.BaseModel):
-    trigger_event_type: str  # typing.Type[BaseEvent] #This breaks for an unknown reason. Issue with fastapi?
+    trigger_effect_type: str  # typing.Type[BaseEffect] #This breaks for an unknown reason. Issue with fastapi?
     response_actions: typing.List[BaseAction]
 
 
@@ -119,7 +119,7 @@ class GameState(pydantic.BaseModel):
     def new_game(cls):
         """Constructor for default initial game state."""
 
-        listener = Listener(trigger_event_type='MoveEvent',
+        listener = Listener(trigger_effect_type='MoveEffect',
                             response_actions=[
                                 ChangeSomeValueAction(increase_by=1)
                             ])
@@ -133,4 +133,4 @@ class GameState(pydantic.BaseModel):
 
 class GameUpdate(pydantic.BaseModel):
     game_state: GameState
-    event: typing.Optional[BaseEvent]
+    effect: typing.Optional[BaseEffect]

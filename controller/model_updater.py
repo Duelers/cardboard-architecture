@@ -9,23 +9,23 @@ class ModelUpdater:
         self.model = model
 
     def handle_action(self, action: models.BaseAction):
-        event = action.to_event(self.model.game_state)
-        return self.handle_event(event)
+        effect = action.to_effect(self.model.game_state)
+        return self.handle_effect(effect)
 
-    def handle_event(self, event: models.BaseEvent):
+    def handle_effect(self, effect: models.BaseEffect):
         old_game_state = self.model.game_state
-        self._listen_to_event(event, old_game_state.listeners)
+        self._listen_to_effect(effect, old_game_state.listeners)
 
-        # Todo allow event modification. "When a spell would deal damage, it deals 1 more damage."
-        new_game_state = event.update_model(old_game_state)
-        update = models.GameUpdate(game_state=new_game_state, event=event)
+        # Todo allow effect modification. "When a spell would deal damage, it deals 1 more damage."
+        new_game_state = effect.update_model(old_game_state)
+        update = models.GameUpdate(game_state=new_game_state, effect=effect)
 
         self.model.update(update)
 
         return update
 
-    def _listen_to_event(self, event: models.BaseEvent, listeners: typing.List[models.Listener]):
+    def _listen_to_effect(self, effect: models.BaseEffect, listeners: typing.List[models.Listener]):
         for listener in listeners:  # move to own function todo
-            if listener.trigger_event_type == type(event).__name__:
+            if listener.trigger_effect_type == type(effect).__name__:
                 for response_action in listener.response_actions:
                     self.handle_action(response_action)

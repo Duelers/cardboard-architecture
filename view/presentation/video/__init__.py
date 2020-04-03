@@ -15,8 +15,8 @@ def display_board(game_state: models.GameState):
         print(display_row)
 
 
-def play_animation(event: models.BaseEvent, game_state: models.GameState):
-    print(event.get_animation(game_state))
+def play_animation(effect: models.BaseEffect, game_state: models.GameState):
+    print(effect.get_animation(game_state))
 
 
 def get_video(src):

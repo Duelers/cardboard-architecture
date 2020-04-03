@@ -11,25 +11,25 @@ model = game_model.Model()
 
 
 @app.post(networking.RECEIVE_GAME_STATE)
-def receive_game_state(game_state: models.GameState, event: models.BaseEvent):
+def receive_game_state(game_state: models.GameState, effect: models.BaseEffect):
     """Updates the view's model of the game.
 
-    Currently this is keeping the event parameter to be simpler for the sender."""
-    update = models.GameUpdate(game_state=game_state, event=None)
+    Currently this is keeping the effect parameter to be simpler for the sender."""
+    update = models.GameUpdate(game_state=game_state, effect=None)
     model.update(update)
 
 
 @app.post(networking.RECEIVE_MOVE)
-def receive_move(game_state: models.GameState, event: models.MoveEvent):
+def receive_move(game_state: models.GameState, effect: models.MoveEffect):
     """Updates the view's model of the game from the sent move."""
-    update = models.GameUpdate(game_state=game_state, event=event)
+    update = models.GameUpdate(game_state=game_state, effect=effect)
     model.update(update)
 
 
 @app.post(networking.RECEIVE_CHANGE_SOME_VALUE)
-def receive_change_some_value(game_state: models.GameState, event: models.ChangeSomeValueEvent):
+def receive_change_some_value(game_state: models.GameState, effect: models.ChangeSomeValueEffect):
     """Updates the view's model of the game from the sent move."""
-    update = models.GameUpdate(game_state=game_state, event=event)
+    update = models.GameUpdate(game_state=game_state, effect=effect)
     model.update(update)
 
 

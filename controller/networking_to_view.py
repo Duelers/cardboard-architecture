@@ -19,11 +19,11 @@ def send_game_state(game_state: models.GameState):
 
 
 def send_update(update: models.GameUpdate):
-    if update.event:
-        route = update.event.get_route()
+    if update.effect:
+        route = update.effect.get_route()
     else:
         route = networking.RECEIVE_GAME_STATE
-        update.event = models.BaseEvent()
+        update.effect = models.BaseEffect()
     requests.post(
         f'{networking.LOCAL_HOST}{networking.VIEW_PORT}{route}',
         json=json.loads(update.json())

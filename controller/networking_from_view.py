@@ -17,7 +17,7 @@ model_updater = ModelUpdater(model)
 def setup_new_game():
     """Creates a new game, and updates the view."""
     game_state = models.GameState.new_game()
-    update = models.GameUpdate(game_state=game_state, event=None)
+    update = models.GameUpdate(game_state=game_state, effect=None)
     model.update(update)
 
 
