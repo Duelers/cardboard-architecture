@@ -21,10 +21,9 @@ def setup_new_game():
     model.update(update)
 
 
-@app.post(networking.USER_INPUT)
-def user_input(start_cell: models.cells.BoardLocation, end_cell: models.cells.BoardLocation):
-    """Receive user input."""
-    action = models.MoveAction(start_cell=start_cell, end_cell=end_cell)
+@app.post(networking.RECEIVE_ACTION)
+def receive_action(action: models.ACTION):
+    """Receive an action from the View."""
     model_updater.handle_action(action)
 
 

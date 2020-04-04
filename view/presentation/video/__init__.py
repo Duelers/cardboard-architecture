@@ -3,7 +3,7 @@ from . import video_resources
 
 
 def display_board(game_state: models.GameState):
-    cell_to_display = {True: 'x', False: '_'}
+    cell_to_display = {True: 'x', None: '_'}
 
     print('Board:')
     for row in range(models.cells.NUM_ROWS):

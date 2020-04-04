@@ -1,10 +1,12 @@
 import pydantic
+import typing
+from . import cards
 
-cell_type = bool
+cell_type = typing.Optional[cards.Unit]
 
-NUM_ROWS = 3
+NUM_ROWS = 5
 row_index = pydantic.conint(ge=0, lt=NUM_ROWS)
-NUM_COLUMNS = 3
+NUM_COLUMNS = 7
 column_index = pydantic.conint(ge=0, lt=NUM_COLUMNS)
 
 

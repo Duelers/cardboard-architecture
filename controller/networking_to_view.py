@@ -8,9 +8,6 @@ import networking
 app = FastAPI()
 
 
-# Todo add selection targets.
-
-
 def send_game_state(game_state: models.GameState):
     requests.post(
         f'{networking.LOCAL_HOST}{networking.VIEW_PORT}{networking.RECEIVE_GAME_STATE}',
@@ -19,11 +16,10 @@ def send_game_state(game_state: models.GameState):
 
 
 def send_update(update: models.GameUpdate):
-    if update.effect:
-        route = update.effect.get_route()
-    else:
-        route = networking.RECEIVE_GAME_STATE
+    route = networking.RECEIVE_EFFECT
+    if not update.effect:
         update.effect = models.BaseEffect()
+        route = networking.RECEIVE_GAME_STATE
     requests.post(
         f'{networking.LOCAL_HOST}{networking.VIEW_PORT}{route}',
         json=json.loads(update.json())

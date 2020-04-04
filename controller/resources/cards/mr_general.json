@@ -1,0 +1,7 @@
+{
+  "name": "Mr. General",
+  "cost": 2,
+  "type": "general",
+  "attack": 2,
+  "max_health": 25
+}

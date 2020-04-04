@@ -1,5 +1,5 @@
 import typing
-import models
+import models.cards
 from . import networking_to_view
 
 
@@ -19,3 +19,7 @@ class Model:
             self._effect_log.append(update.effect)
 
         networking_to_view.send_update(update)
+
+
+def get_card(card_id: str) -> models.cards.Card:
+    pass  # todo

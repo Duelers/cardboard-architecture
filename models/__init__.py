@@ -7,41 +7,77 @@ import pydantic
 import typing
 
 from . import cells
-import networking
+from . import cards
+
+
+# INTERACTIONS (Mixins for Effects and Actions)
+class _Move(pydantic.BaseModel):
+    name: typing.Literal['Move'] = 'Move'
+    start_cell: cells.BoardLocation
+    end_cell: cells.BoardLocation
+
+
+class _CastMinion(pydantic.BaseModel):
+    name: typing.Literal['CastMinion'] = 'CastMinion'
+    target_cell: cells.BoardLocation
+    minion: cards.Minion
+
+
+class _ChangeSomeValue(pydantic.BaseModel):
+    name: typing.Literal['ChangeSomeValue'] = 'ChangeSomeValue'
+    increase_by: int
 
 
 # EFFECTS
 class BaseEffect(pydantic.BaseModel):
+    name: str = None  # Set to a literal in subclasses so that they can be deserialized to back to the right model.
+
     def get_animation(self, game_state: GameState):
         return NotImplemented
 
     def update_model(self, game_state: GameState) -> GameState:
         return NotImplemented
 
-    def get_route(self) -> str:
+
+class BaseAction(pydantic.BaseModel):
+    def to_effect(self, model: GameState) -> BaseEffect:
         return NotImplemented
 
 
-class MoveEffect(BaseEffect):
-    start_cell: cells.BoardLocation
-    end_cell: cells.BoardLocation
-
+class MoveEffect(BaseEffect, _Move):
     def get_animation(self, game_state: GameState):
         return f'Moving from {self.start_cell} to {self.end_cell}'
 
     def update_model(self, game_state: GameState) -> GameState:
         game_state = game_state.copy(deep=True)
-        game_state.set_cell(self.start_cell, False)
-        game_state.set_cell(self.end_cell, True)
+
+        moving_unit = game_state.get_cell(self.start_cell)
+        game_state.set_cell(self.start_cell, None)
+        game_state.set_cell(self.end_cell, moving_unit)
         return game_state
 
-    def get_route(self) -> str:
-        return networking.RECEIVE_MOVE
+
+class MoveAction(BaseAction, _Move):
+    def to_effect(self, model: GameState) -> BaseEffect:
+        return MoveEffect(start_cell=self.start_cell, end_cell=self.end_cell)
 
 
-class ChangeSomeValueEffect(BaseEffect):
-    increase_by: int
+class CastMinionEffect(BaseEffect, _CastMinion):
+    def get_animation(self, game_state: GameState):
+        return f'Casting Minion {self.minion} to {self.target_cell}'
 
+    def update_model(self, game_state: GameState) -> GameState:
+        game_state = game_state.copy(deep=True)
+        game_state.set_cell(self.target_cell, self.minion)
+        return game_state
+
+
+class CastMinionAction(BaseAction, _CastMinion):
+    def to_effect(self, model: GameState) -> BaseEffect:
+        return CastMinionEffect(target_cell=self.target_cell, minion=self.minion)
+
+
+class ChangeSomeValueEffect(BaseEffect, _ChangeSomeValue):
     def get_animation(self, game_state: GameState):
         return f'Increasing some value by {self.increase_by}. Now {game_state.some_value}.'
 
@@ -49,29 +85,14 @@ class ChangeSomeValueEffect(BaseEffect):
         game_state.some_value += self.increase_by
         return game_state
 
-    def get_route(self) -> str:
-        return networking.RECEIVE_CHANGE_SOME_VALUE
 
-
-# ACTIONS
-class BaseAction(pydantic.BaseModel):
-    def to_effect(self, model: GameState) -> BaseEffect:
-        return NotImplemented
-
-
-class MoveAction(BaseAction):
-    start_cell: cells.BoardLocation
-    end_cell: cells.BoardLocation
-
-    def to_effect(self, model: GameState) -> BaseEffect:
-        return MoveEffect(start_cell=self.start_cell, end_cell=self.end_cell)
-
-
-class ChangeSomeValueAction(BaseAction):
-    increase_by: int
-
+class ChangeSomeValueAction(BaseAction, _ChangeSomeValue):
     def to_effect(self, model: GameState) -> BaseEffect:
         return ChangeSomeValueEffect(increase_by=self.increase_by)
+
+
+EFFECT = typing.Union[MoveEffect, CastMinionEffect, ChangeSomeValueEffect]
+ACTION = typing.Union[MoveAction, CastMinionAction, ChangeSomeValueAction]
 
 
 # Listeners
@@ -80,10 +101,10 @@ class Listener(pydantic.BaseModel):
     response_actions: typing.List[BaseAction]
 
 
-# board[x][y] = bool
+# board[x][y] = cells.cell_type
 # board[x] = List3[bool] (Column)
 # board = List3[Column] (Board)
-column_type = pydantic.conlist(bool,
+column_type = pydantic.conlist(cells.cell_type,
                                min_items=cells.NUM_ROWS,
                                max_items=cells.NUM_ROWS)
 board_type = pydantic.conlist(column_type,
@@ -99,7 +120,7 @@ class GameState(pydantic.BaseModel):
     def get_cell(self, location: cells.BoardLocation) -> cells.cell_type:
         return self.board[location.x][location.y]
 
-    def set_cell(self, location: cells.BoardLocation, value: bool):
+    def set_cell(self, location: cells.BoardLocation, value: cells.cell_type):
         self.board[location.x][location.y] = value
 
     @property
@@ -120,9 +141,13 @@ class GameState(pydantic.BaseModel):
                                 ChangeSomeValueAction(increase_by=1)
                             ])
 
-        return cls(board=[[False, True, False],
-                          [False, False, False],
-                          [False, True, False]],
+        return cls(board=[[None, None, None, None, None],
+                          [None, None, None, None, None],
+                          [None, None, None, None, None],
+                          [None, None, None, None, None],
+                          [None, None, None, None, None],
+                          [None, None, None, None, None],
+                          [None, None, None, None, None]],
                    some_value=0,
                    listeners=[listener])
 
