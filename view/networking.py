@@ -3,21 +3,20 @@ from fastapi import FastAPI
 import json
 import models.cells
 from . import game_model
+from . import presentation
 import networking
 
 app = FastAPI()
 
-model = game_model.Model()
+model = game_model.Model(presentation.Presentation())
 
 
 # noinspection PyUnusedLocal
 @app.post(networking.RECEIVE_GAME_STATE)
-def receive_game_state(game_state: models.GameState, effect: models.BaseEffect):
-    """Updates the view's model of the game.
-
-    Currently this is keeping the effect parameter to be simpler for the sender."""
-    update = models.GameUpdate(game_state=game_state, effect=None)
-    model.update(update)
+def receive_game_state(game_state: models.GameState):
+    """Updates the view's model of the game."""
+    model.initialize(game_state)
+    model.present()
 
 
 # Receive effects

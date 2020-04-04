@@ -2,7 +2,7 @@ import pydantic
 import typing
 from . import cards
 
-cell_type = typing.Optional[cards.Unit]
+cell_type = typing.Optional[cards.CARD]
 
 NUM_ROWS = 5
 row_index = pydantic.conint(ge=0, lt=NUM_ROWS)

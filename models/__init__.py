@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import models.decks
+
 """All the models are in one one package in the python implementation, because it greatly simplifies circular 
 dependencies in pydantic."""
 
@@ -133,7 +135,7 @@ class GameState(pydantic.BaseModel):
         return all_cells
 
     @classmethod
-    def new_game(cls):
+    def new_game(cls, my_deck: models.decks.Deck):
         """Constructor for default initial game state."""
 
         listener = Listener(trigger_effect_type='MoveEffect',
@@ -141,15 +143,21 @@ class GameState(pydantic.BaseModel):
                                 ChangeSomeValueAction(increase_by=1)
                             ])
 
-        return cls(board=[[None, None, None, None, None],
-                          [None, None, None, None, None],
-                          [None, None, None, None, None],
-                          [None, None, None, None, None],
-                          [None, None, None, None, None],
-                          [None, None, None, None, None],
-                          [None, None, None, None, None]],
-                   some_value=0,
-                   listeners=[listener])
+        my_general = my_deck.general
+
+        board = [[None, None, my_general, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None]]
+
+        new_game_state = cls(board=board,
+                             some_value=0,
+                             listeners=[listener])
+
+        return new_game_state
 
 
 class GameUpdate(pydantic.BaseModel):

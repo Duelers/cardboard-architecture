@@ -14,7 +14,7 @@ class ModelUpdater:
 
     def handle_effect(self, effect: models.BaseEffect):
         old_game_state = self.model.game_state
-        self._listen_to_effect(effect, old_game_state.listeners)
+        self._all_listen_to_effect(effect, old_game_state.listeners)
 
         # Todo allow effect modification. "When a spell would deal damage, it deals 1 more damage."
         new_game_state = effect.update_model(old_game_state)
@@ -24,8 +24,11 @@ class ModelUpdater:
 
         return update
 
-    def _listen_to_effect(self, effect: models.BaseEffect, listeners: typing.List[models.Listener]):
-        for listener in listeners:  # move to own function todo
-            if listener.trigger_effect_type == type(effect).__name__:
-                for response_action in listener.response_actions:
-                    self.handle_action(response_action)
+    def _all_listen_to_effect(self, effect: models.BaseEffect, listeners: typing.List[models.Listener]):
+        for listener in listeners:
+            self._listen_to_effect(effect, listener)
+
+    def _listen_to_effect(self, effect: models.BaseEffect, listener: models.Listener):
+        if listener.trigger_effect_type == type(effect).__name__:
+            for response_action in listener.response_actions:
+                self.handle_action(response_action)

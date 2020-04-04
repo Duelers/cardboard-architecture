@@ -14,7 +14,7 @@ class CardModel(base.BaseModel):
 
 
 class MinionCard(CardModel):
-    type: typing.Literal[card_types.minion]
+    type: typing.Literal[card_types.minion] = card_types.minion
     attack: int
     max_health: int
     tribes: typing.List[str] = []
@@ -25,7 +25,7 @@ class MinionCard(CardModel):
 
 
 class SpellCard(CardModel):
-    type: typing.Literal[card_types.spell]
+    type: typing.Literal[card_types.spell] = card_types.spell
     effects: typing.Union[
         _effects.Effect,
         typing.List[_effects.Effect]
@@ -33,7 +33,7 @@ class SpellCard(CardModel):
 
 
 class ArtifactCard(CardModel):
-    type: typing.Literal[card_types.artifact]
+    type: typing.Literal[card_types.artifact] = card_types.artifact
     abilities: typing.Union[
         _abilities.Ability,
         typing.List[_abilities.Ability]

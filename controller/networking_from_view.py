@@ -4,21 +4,28 @@ from fastapi import FastAPI
 from .model_updater import ModelUpdater
 from . import available_actions_generator
 from . import game_model
+from . import load_resources
+from . import networking_to_view
 import networking
 import models.cells
+import models.decks
 
 app = FastAPI()
 
-model = game_model.Model()
-model_updater = ModelUpdater(model)
+deck_id = 'deck0'  # Todo generate games programmatically.
+my_deck = load_resources.get_deck(deck_id)
+
+model = game_model.Model(my_deck)
+model_updater = ModelUpdater(model)  # todo duplication with setup_new_game..
 
 
 @app.post(networking.NEW_GAME)
 def setup_new_game():
     """Creates a new game, and updates the view."""
-    game_state = models.GameState.new_game()
-    update = models.GameUpdate(game_state=game_state, effect=None)
-    model.update(update)
+    global model, model_updater
+    model = game_model.Model(my_deck)
+    model_updater = ModelUpdater(model)
+    networking_to_view.send_game_state(model.game_state)
 
 
 @app.post(networking.RECEIVE_ACTION)

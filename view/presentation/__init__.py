@@ -6,14 +6,10 @@ class Presentation:
     def __init__(self):
         self.video = video
 
-    def present(self, update: models.GameUpdate):
+    def update(self, update: models.GameUpdate):
         if update.effect:
             self.video.play_animation(update.effect, update.game_state)
-        self.video.display_board(update.game_state)
+        self.draw_game_state(update.game_state)
 
-
-_presentation = Presentation()
-
-
-def update(update: models.GameUpdate):
-    _presentation.present(update)
+    def draw_game_state(self, game_state: models.GameState):
+        self.video.display_board(game_state)

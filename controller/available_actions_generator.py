@@ -23,7 +23,7 @@ def _get_available_actions_from_cell(
     if not game_state.get_cell(cell):
         assert False, "Nothing to move at selected cell."
 
-    displacements = [(-1, 0), (-1, 0), (-1, 0), (-1, 0)]
+    displacements = [(-1, 0), (0, -1), (1, 0), (0, 1)]
     end_cells = []
     for displacement in displacements:
         try:
