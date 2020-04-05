@@ -16,11 +16,9 @@ def get_card(card_id: str) -> models.cards.CARD:
     return _get_resource(card_id, CARDS_DIR, models.cards.CARD)
 
 
-def get_deck(deck_id: str) -> models.decks.Deck:
-    deck_dict = _get_resource(deck_id, DECKS_DIR, typing.Dict)
-    general = get_card(deck_dict['general'])
-    cards = [get_card(card_id) for card_id in deck_dict['cards']]
-    return models.decks.Deck(general=general, cards=cards)
+def get_master_deck(deck_id: str) -> models.decks.MasterDeck:
+    master_deck = _get_resource(deck_id, DECKS_DIR, models.decks.MasterDeck)
+    return master_deck
 
 
 ResourceType = typing.TypeVar('ResourceType')

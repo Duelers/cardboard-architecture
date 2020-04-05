@@ -114,9 +114,15 @@ board_type = pydantic.conlist(column_type,
                               max_items=cells.NUM_COLUMNS)
 
 
+class PlayerState(pydantic.BaseModel):
+    deck: decks.CurrentDeck
+
+
 class GameState(pydantic.BaseModel):
     board: board_type
     some_value: int
+
+    player_1_state: PlayerState  # todo add player2
     listeners: typing.List[Listener]
 
     def get_cell(self, location: cells.BoardLocation) -> cells.cell_type:
@@ -133,31 +139,6 @@ class GameState(pydantic.BaseModel):
                 cell = cells.Cell(column=x, row=y, contents=self.get_cell(cells.BoardLocation(x=x, y=y)))
                 all_cells.append(cell)
         return all_cells
-
-    @classmethod
-    def new_game(cls, my_deck: models.decks.Deck):
-        """Constructor for default initial game state."""
-
-        listener = Listener(trigger_effect_type='MoveEffect',
-                            response_actions=[
-                                ChangeSomeValueAction(increase_by=1)
-                            ])
-
-        my_general = my_deck.general
-
-        board = [[None, None, my_general, None, None],
-                 [None, None, None, None, None],
-                 [None, None, None, None, None],
-                 [None, None, None, None, None],
-                 [None, None, None, None, None],
-                 [None, None, None, None, None],
-                 [None, None, None, None, None]]
-
-        new_game_state = cls(board=board,
-                             some_value=0,
-                             listeners=[listener])
-
-        return new_game_state
 
 
 class GameUpdate(pydantic.BaseModel):

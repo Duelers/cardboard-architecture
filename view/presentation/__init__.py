@@ -13,3 +13,4 @@ class Presentation:
 
     def draw_game_state(self, game_state: models.GameState):
         self.video.display_board(game_state)
+        self.video.display_deck(game_state)

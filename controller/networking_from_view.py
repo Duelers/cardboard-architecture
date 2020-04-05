@@ -13,7 +13,7 @@ import models.decks
 app = FastAPI()
 
 deck_id = 'deck0'  # Todo generate games programmatically.
-my_deck = load_resources.get_deck(deck_id)
+my_deck = load_resources.get_master_deck(deck_id)
 
 model = game_model.Model(my_deck)
 model_updater = ModelUpdater(model)  # todo duplication with setup_new_game..

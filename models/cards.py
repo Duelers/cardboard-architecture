@@ -1,6 +1,13 @@
 import pydantic
 import typing
 
+MAX_CARDS_PER_DECK = 3
+
+
+class CardInclusionInDeck(pydantic.BaseModel):
+    card_id: str
+    count: pydantic.conint(ge=0, le=MAX_CARDS_PER_DECK)
+
 
 class Card(pydantic.BaseModel):
     name: str
@@ -20,11 +27,12 @@ class Unit(Card):
 
 
 class General(Unit):
-    pass
+    type: typing.Literal['general'] = 'general'
 
 
 class Minion(Unit, Castable):
-    pass
+    type: typing.Literal['minion'] = 'minion'
 
 
+CASTABLE = typing.Union[Minion]
 CARD = typing.Union[General, Minion]  # Todo see if I can remove duplication with card_parsing

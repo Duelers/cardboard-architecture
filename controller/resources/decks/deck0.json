@@ -1,4 +1,9 @@
 {
-  "general": "mr_general",
-  "cards": []
+  "general_id": "mr_general",
+  "cards": [
+    {
+      "card_id": "underling",
+      "count": 1
+    }
+  ]
 }

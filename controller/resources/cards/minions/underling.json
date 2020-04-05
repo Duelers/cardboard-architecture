@@ -1,0 +1,7 @@
+{
+  "name": "underling",
+  "type": "minion",
+  "attack": 1,
+  "max_health": 1,
+  "cost": 0
+}
