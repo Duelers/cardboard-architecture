@@ -6,20 +6,18 @@ import models
 import models.cells
 
 
-def get_available_actions(game_state: models.GameState) -> typing.List[models.MoveAction]:
-    all_actions = []
+def get_available_moves(game_state: models.GameState) -> typing.List[models.MoveAction]:
+    all_moves = []
     for cell in game_state.all_cells:
         if cell.contents:
-            actions = _get_available_actions_from_cell(models.cells.BoardLocation(x=cell.column, y=cell.row),
-                                                       game_state)
-            all_actions += actions
-    return all_actions
+            moves = _get_available_moves_from_cell(models.cells.BoardLocation(x=cell.column, y=cell.row),
+                                                   game_state)
+            all_moves += moves
+    return all_moves
 
 
-def _get_available_actions_from_cell(
-        cell: models.cells.BoardLocation,
-        game_state: models.GameState
-) -> typing.List[models.MoveAction]:
+def _get_available_moves_from_cell(cell: models.cells.BoardLocation, game_state: models.GameState
+                                   ) -> typing.List[models.MoveAction]:
     if not game_state.get_cell(cell):
         assert False, "Nothing to move at selected cell."
 

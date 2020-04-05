@@ -2,12 +2,11 @@ import typing
 from fastapi import FastAPI
 
 from .model_updater import ModelUpdater
-from . import available_actions_generator
+from . import available_actions as available_actions_mod
 from . import game_model
 from . import load_resources
 from . import networking_to_view
 import networking
-import models.cells
 import models.decks
 
 app = FastAPI()
@@ -38,5 +37,5 @@ def receive_action(action: models.ACTION):
          response_model=typing.List[models.MoveAction])
 def available_actions():
     """Get all available actions."""
-    available_actions = available_actions_generator.get_available_actions(model.game_state)
+    available_actions = available_actions_mod.get_available_actions(model.game_state)
     return available_actions

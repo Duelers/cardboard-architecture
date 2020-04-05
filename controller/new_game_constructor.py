@@ -41,6 +41,9 @@ def master_deck_to_current_deck(master_deck: models.decks.MasterDeck):
     cards = []
     for card_inclusion in master_deck.cards:
         card = load_resources.get_card(card_inclusion.card_id)
-        cards += [card] * card_inclusion.count
+        for i in range(card_inclusion.count):
+            card = card.copy(deep=True)
+            card.copy_id = i
+            cards.append(card)
     current_deck = models.decks.CurrentDeck(cards=cards)
     return current_deck

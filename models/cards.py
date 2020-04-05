@@ -15,6 +15,8 @@ class Card(pydantic.BaseModel):
 
 class Castable(Card):
     cost: pydantic.conint(ge=0)
+    copy_id: typing.Optional[int] = None # id added when deck is created such that no card with the same name in a
+    # deck has the same id
 
 
 class Unit(Card):
