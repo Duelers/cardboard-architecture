@@ -1,8 +1,8 @@
-inflection
-certifi==2019.11.28
+inflection==0.3.1
+certifi==2020.4.5.1
 chardet==3.0.4
 click==7.1.1
-fastapi==0.53.2
+fastapi==0.54.0
 h11==0.9.0
 idna==2.9
 pydantic==1.4
@@ -11,3 +11,5 @@ starlette==0.13.2
 urllib3==1.25.8
 uvicorn==0.11.3
 websockets==8.1
+git+git://github.com/Duelers/card-scripting-schema.git#egg=card-scripting-schema
+
