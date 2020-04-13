@@ -17,10 +17,10 @@ def get_available_minion_casts(game_state: models.GameState) -> typing.List[mode
     for card in cards:
         if type(card) == models.cards.Minion:
             casts = get_available_minion_casts_for_minion(game_state, card)
-        minion_casts += casts
+            minion_casts += casts
     return minion_casts
 
 
 def get_available_minion_casts_for_minion(game_state: models.GameState, minion: models.cards.Minion
                                           ) -> typing.List[models.CastMinionAction]:
-    pass
+    return []  # todo

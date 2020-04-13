@@ -22,7 +22,6 @@ def display_deck(game_state: models.GameState):
         print(card)
 
 
-
 def play_animation(effect: models.BaseEffect, game_state: models.GameState):
     print(effect.get_animation(game_state))
 

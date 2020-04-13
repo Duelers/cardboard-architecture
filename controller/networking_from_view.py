@@ -11,10 +11,12 @@ import models.decks
 
 app = FastAPI()
 
-deck_id = 'deck0'  # Todo generate games programmatically.
-my_deck = load_resources.get_master_deck(deck_id)
+deck_ids = ('deck0', 'deck0')  # Todo generate games programmatically.
+# noinspection PyTypeChecker
+master_decks: typing.Tuple[models.decks.MasterDeck, models.decks.MasterDeck] \
+    = tuple(load_resources.get_master_deck(deck_id) for deck_id in deck_ids)
 
-model = game_model.Model(my_deck)
+model = game_model.Model(master_decks)
 model_updater = ModelUpdater(model)  # todo duplication with setup_new_game..
 
 
@@ -22,7 +24,7 @@ model_updater = ModelUpdater(model)  # todo duplication with setup_new_game..
 def setup_new_game():
     """Creates a new game, and updates the view."""
     global model, model_updater
-    model = game_model.Model(my_deck)
+    model = game_model.Model(master_decks)
     model_updater = ModelUpdater(model)
     networking_to_view.send_game_state(model.game_state)
 

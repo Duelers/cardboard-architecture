@@ -4,11 +4,13 @@ import models.decks
 from . import networking_to_view
 from . import new_game_constructor
 
+
 class Model:
     """A wrapper for GameState that provides an interface for updating it."""
 
-    def __init__(self, my_deck: models.decks.MasterDeck):
-        self._game_state: models.GameState = new_game_constructor.generate_new_game(my_deck)
+    def __init__(self, master_decks: typing.Tuple[models.decks.MasterDeck, models.decks.MasterDeck]):
+        self._game_state = new_game_constructor.generate_new_game(master_decks)
+
         self._effect_log: typing.List[models.BaseEffect] = []
 
     @property
@@ -22,4 +24,3 @@ class Model:
             self._effect_log.append(update.effect)
 
         networking_to_view.send_update(update)
-
