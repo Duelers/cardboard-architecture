@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 trigger = "trigger"  # The event which causes a triggered effect
 
 
-class This(base.BaseModel):
+class This(base.SingleGetter[object]):
     def get(self, game_state: models.GameState, this: models.cards.BaseCard):
         return this
 
@@ -80,7 +80,6 @@ class GetVarObject(base.BaseModel):
 
 from . import object_types
 
-
 # def make_choose_unit(object_type: object_types.ObjectType):
 #     model = object_types.make_typed_model(object_type,
 #                                           name='ChooseUnit',
@@ -140,6 +139,7 @@ Objects = typing.Union[
 ]
 
 from . import locations
+
 #
 # choose_unit.update_forward_refs()
 # choose_general.update_forward_refs()

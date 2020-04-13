@@ -11,6 +11,7 @@ from .base import GetterType
 
 if typing.TYPE_CHECKING:
     import models
+    from . import InGameCardMixin
 
 
 class SingleLocation(base.SingleGetter[models.cells.BoardLocation], abc.ABC):
@@ -40,8 +41,9 @@ class This(SingleLocation):
 class LocationFromUnit(SingleLocation):  # uses Object
     unit: objects.Unit
 
-    def get(self, game_state: models.GameState, this: models.cards.BaseCard):
-        pass
+    def get(self, game_state: models.GameState, this: InGameCardMixin):
+        location = game_state.location_registry.card_to_location[this.instance_id]
+        return location
 
 
 class GetVarLocation(SingleLocation):

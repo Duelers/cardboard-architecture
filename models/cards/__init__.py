@@ -2,6 +2,7 @@
 import pydantic
 import typing
 
+import models.cells
 from .. import players
 
 from . import cards, base, factions, locations, card_types, abilities as _abilities, effects as _effects
@@ -33,7 +34,8 @@ class UnitCard(BaseCard, PermanentMixin):
     attack: pydantic.conint(ge=0)
     max_health: pydantic.conint(ge=0)
 
-    move_options: locations.MultipleLocation = locations.LocationFromCoords(row=0, col=0)
+    # move_options: locations.MultipleLocation = locations.LocationFromCoords(row=0, col=0)
+    move_options: base.MultipleGetter[models.cells.BoardLocation] = locations.LocationFromCoords(row=0, col=0)
 
 
 class GeneralCard(UnitCard):
@@ -57,7 +59,7 @@ class InGameCardMixin(pydantic.BaseModel):
     player: players.PlayerNumber = None  # should just be on permanents.
 
 
-class InGameUnit(InGameCardMixin):
+class InGameUnit(UnitCard, InGameCardMixin):
     current_health: typing.Optional[int] = None
     # Can technically be negative at times. Relevant when taking damage and then healing in response.
     # None while off the board. Set to max_health when etb.
