@@ -19,11 +19,21 @@ class BaseModel(pydantic.BaseModel):
 GetterType = typing.TypeVar('GetterType')
 
 
+class GetterParams:
+    def __init__(self, game_state: models.GameState,
+                 this: models.cards.BaseCard,
+                 request_choice
+                 ):
+        self.game_state = game_state
+        self.this = this
+        self.request_choice = request_choice
+
+
 class MultipleGetter(BaseModel, typing.Generic[GetterType]):
     """A reified getter object that returns a list of values."""
 
     @abc.abstractmethod
-    def get_multiple(self, game_state: models.GameState, this: models.cards.BaseCard) -> typing.List[GetterType]:
+    def get_multiple(self, params: GetterParams) -> typing.List[GetterType]:
         pass
 
 
@@ -31,11 +41,11 @@ class SingleGetter(MultipleGetter[GetterType], typing.Generic[GetterType]):
     """A reified getter object that returns a single."""
 
     @abc.abstractmethod
-    def get(self, game_state: models.GameState, this: models.cards.BaseCard) -> GetterType:
+    def get(self, params: GetterParams) -> GetterType:
         pass
 
-    def get_multiple(self, game_state: models.GameState, this: models.cards.BaseCard) -> typing.List[GetterType]:
-        return [self.get(game_state, this)]
+    def get_multiple(self, params: GetterParams) -> typing.List[GetterType]:
+        return [self.get(params)]
 
 
 T = typing.TypeVar('T')

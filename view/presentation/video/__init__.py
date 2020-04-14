@@ -1,3 +1,5 @@
+import pprint
+
 import models.cells
 from . import video_resources
 
@@ -19,7 +21,7 @@ def display_board(game_state: models.GameState):
 def display_deck(game_state: models.GameState):
     print('My Deck:')
     for card in game_state.player_1_state.deck:
-        print(card)
+        pprint.pp(card)
 
 
 def play_animation(effect: models.BaseEffect, game_state: models.GameState):

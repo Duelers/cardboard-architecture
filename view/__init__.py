@@ -27,25 +27,24 @@ class View:
     def receive_update(self, update: models.GameUpdate):
         self.model.update(update)
 
-    def make_choice(self, choices: typing.List):
+    def receive_choices(self, choices, description):
+        self.model.display_options(choices)
+        return self.make_choice(choices, description)
+
+    def make_choice(self, choices: typing.List, description="Make a selection"):
         choice = -1
         while choice not in range(len(choices)):
-            print("Make a selection")
+            print(description)
             choice = int(input())
-
-        self.controller.receive_choice(choice)
-
-    def receive_available_actions(self, actions: typing.List[models.BaseAction]):
-        self.model.display_options(actions)
-        self.make_choice(actions)
-
-    def dev_move(self, action: models.MoveAction):
-        """A testing route to simulate an input to the ui."""
-        self.send_action(action)
-
-    def dev_cast_minion(self, action: models.CastMinionAction):
-        """A testing route to simulate an input to the ui."""
-        self.send_action(action)
-
-    def send_action(self, action: models.ACTION):
-        self.controller._receive_action(action)
+        return choice
+    #
+    # def dev_move(self, action: models.MoveAction):
+    #     """A testing route to simulate an input to the ui."""
+    #     self.send_action(action)
+    #
+    # def dev_cast_minion(self, action: models.CastMinionAction):
+    #     """A testing route to simulate an input to the ui."""
+    #     self.send_action(action)
+    #
+    # def send_action(self, action: models.ACTION):
+    #     self.controller._receive_action(action)

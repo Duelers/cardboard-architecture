@@ -17,11 +17,16 @@ class Controller:
 
         self.view: view.View = None  # Must be set before use.
 
-        self.available_actions = None
-
     def set_view(self, view):
         """Must be called before use."""
         self.view = view
+
+    def start(self, master_decks):
+        self.setup_new_game(master_decks)
+
+        while True:
+            action = self.request_action()
+            self._perform_action(action)
 
     def setup_new_game(self, master_decks):
         """Creates a new game, and updates the view."""
@@ -30,21 +35,20 @@ class Controller:
         self.model_updater = ModelUpdater(self.model)
         self.send_game_state(self.model.game_state)
 
-    def receive_choice(self, choice: int):
-        """Receives a choice from the view. This is how the view communicates to the controller."""
-        action = self.available_actions[choice]  # todo make this work for other kinds of choices based on context.
-        self._receive_action(action)
+    def request_action(self):
+        """Sends all available actions."""
+        available_actions = available_actions_mod.get_available_actions(self.model.game_state, self.request_choice)
+        return self.request_choice(available_actions)
 
-    def _receive_action(self, action: models.ACTION):
+    def request_choice(self, choices, description="Make a selection"):
+        choice_number = self.view.receive_choices(choices, description)
+        return choices[choice_number]
+
+    def _perform_action(self, action: models.ACTION):
         """Receive an action from the View."""
         update = self.model_updater.handle_action(action)
         self.send_update(update)
-        self.send_available_actions()
-
-    def send_available_actions(self):
-        """Sends all available actions."""
-        self.available_actions = available_actions_mod.get_available_actions(self.model.game_state)
-        self.view.receive_available_actions(self.available_actions)
+        self.request_action()
 
     def send_game_state(self, game_state: models.GameState):
         """Sends the game state without an Effect for some reason, such as when the game first loads."""

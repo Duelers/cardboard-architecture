@@ -26,4 +26,5 @@ class Model:
         self.presentation.draw_game_state(self._game_state)
 
     def display_options(self, options):
+        options = [(i, option) for i, option in enumerate(options)]
         pprint.pp(options)

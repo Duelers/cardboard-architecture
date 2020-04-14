@@ -4,8 +4,8 @@ import models.cells
 from controller.available_actions.available_moves import get_available_moves
 
 
-def get_available_actions(game_state: models.GameState) -> typing.List[models.BaseAction]:
-    moves = get_available_moves(game_state)
+def get_available_actions(game_state: models.GameState, request_choice) -> typing.List[models.BaseAction]:
+    moves = get_available_moves(game_state, request_choice)
     minion_casts = get_available_minion_casts(game_state)
     return moves
 

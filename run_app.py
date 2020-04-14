@@ -7,7 +7,7 @@ class App:
     def __init__(self):
         self.view, self.controller = self._init_view_and_controller()
 
-        self._setup_new_game()
+        self._start()
 
     def _init_view_and_controller(self):
         _view = view.View()
@@ -18,15 +18,15 @@ class App:
 
         return _view, _controller
 
-    def _setup_new_game(self):
+    def _start(self):
         deck_ids = ('deck0', 'deck0')
         master_decks = tuple(controller.load_resources.get_master_deck(deck_id) for deck_id in deck_ids)
-        self.controller.setup_new_game(master_decks)
+        self.controller.start(master_decks)
 
 
 if __name__ == '__main__':
     app = App()
 
-    app.controller.send_available_actions()
+    # app.controller.request_action()
 
     print("fin")
