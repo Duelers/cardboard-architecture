@@ -1,7 +1,8 @@
 import typing
+
+import controller.action_networking
 import models.cards
 import models.decks
-from . import networking_to_view
 from . import new_game_constructor
 
 
@@ -23,4 +24,4 @@ class Model:
         if update.effect:
             self._effect_log.append(update.effect)
 
-        networking_to_view.send_update(update)
+        controller.action_networking.send_update(update)

@@ -35,7 +35,7 @@ class UnitCard(BaseCard, PermanentMixin):
     max_health: pydantic.conint(ge=0)
 
     # move_options: locations.MultipleLocation = locations.LocationFromCoords(row=0, col=0)
-    move_options: base.MultipleGetter[models.cells.BoardLocation] = locations.LocationFromCoords(row=0, col=0)
+    move_options: base.MultipleGetter = locations.LocationFromCoords(row=0, col=0)
 
 
 class GeneralCard(UnitCard):

@@ -19,7 +19,7 @@ class BaseModel(pydantic.BaseModel):
 GetterType = typing.TypeVar('GetterType')
 
 
-class MultipleGetter(BaseModel, abc.ABC, typing.Generic[GetterType]):
+class MultipleGetter(BaseModel, typing.Generic[GetterType]):
     """A reified getter object that returns a list of values."""
 
     @abc.abstractmethod
@@ -27,7 +27,7 @@ class MultipleGetter(BaseModel, abc.ABC, typing.Generic[GetterType]):
         pass
 
 
-class SingleGetter(MultipleGetter, abc.ABC, typing.Generic[GetterType]):
+class SingleGetter(MultipleGetter[GetterType], typing.Generic[GetterType]):
     """A reified getter object that returns a single."""
 
     @abc.abstractmethod

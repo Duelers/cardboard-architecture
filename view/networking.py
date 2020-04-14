@@ -1,4 +1,5 @@
 import requests
+import typing
 from fastapi import FastAPI
 import json
 import models.cells
@@ -26,11 +27,17 @@ def receive_effect(game_state: models.GameState, effect: models.EFFECT):
     model.update(update)
 
 
+@app.post(networking.RECEIVE_AVAILABLE_ACTIONS)
+def receive_available_actions(actions: typing.List[models.BaseAction]):
+    print(actions)
+    pass  # todo model.display_options() ?
+
+
 # Temporary debug inputs to simulate having a user interface.
-@app.post(networking.DEV_SELECTION)
-def dev_selection(selection_cell: models.cells.BoardLocation):
-    """A testing route to simulate an input to the ui."""
-    send_selection(selection_cell)
+# @app.post(networking.DEV_SELECTION)
+# def dev_selection(selection_cell: models.cells.BoardLocation):
+#     """A testing route to simulate an input to the ui."""
+#     send_selection(selection_cell)
 
 
 @app.post(networking.DEV_MOVE)
@@ -51,9 +58,8 @@ def send_action(action: models.ACTION):
         json=json.loads(action.json())
     )
 
-
-def send_selection(selected_cell: models.cells.BoardLocation):
-    requests.post(
-        f'{networking.LOCAL_HOST}{networking.CONTROLLER_PORT}{networking.GET_AVAILABLE_ACTIONS}',
-        json={'selected_cell': json.loads(selected_cell.json())}
-    )
+# def send_selection(selected_cell: models.cells.BoardLocation):
+#     requests.post(
+#         f'{networking.LOCAL_HOST}{networking.CONTROLLER_PORT}{networking.GET_AVAILABLE_ACTIONS}',
+#         json={'selected_cell': json.loads(selected_cell.json())}
+#     )
