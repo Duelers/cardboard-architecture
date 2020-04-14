@@ -2,6 +2,7 @@ import typing
 
 import models
 from .presentation import Presentation
+import pprint
 
 
 class Model:
@@ -23,3 +24,6 @@ class Model:
         Might be removable.
         """
         self.presentation.draw_game_state(self._game_state)
+
+    def display_options(self, options):
+        pprint.pp(options)
