@@ -10,6 +10,6 @@ requests==2.23.0
 starlette==0.13.2
 urllib3==1.25.8
 uvicorn==0.11.3
-websockets==8.1
+websockets==9.1
 #git+git://github.com/Duelers/card-scripting-schema.git#egg=card-scripting-schema
 
